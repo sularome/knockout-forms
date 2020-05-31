@@ -1,0 +1,29 @@
+{
+  "name": "knockout-forms",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sularome/knockout-forms.git"
+  },
+  "keywords": [
+    "knockout.js",
+    "forms",
+    "knockout",
+    "validation"
+  ],
+  "author": "Yordan Stoev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sularome/knockout-forms/issues"
+  },
+  "homepage": "https://github.com/sularome/knockout-forms#readme",
+  "devDependencies": {
+    "knockout": "^3.5.1",
+    "typescript": "^3.9.3"
+  }
+}
