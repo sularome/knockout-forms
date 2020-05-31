@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "ci": "npm run test",
+    "clear": "npx rimraf dist",
+    "build": "npm run clear && npx tsc -p tsconfig.base.json",
+    "test": "tsc --project tsconfig.test.json && jest --config=jest.config.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +26,12 @@
   },
   "homepage": "https://github.com/sularome/knockout-forms#readme",
   "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "jest": "^26.0.1",
     "knockout": "^3.5.1",
+    "rimraf": "^3.0.2",
+    "tslint": "^6.1.2",
+    "tslint-config-airbnb": "^5.11.2",
     "typescript": "^3.9.3"
   }
 }
