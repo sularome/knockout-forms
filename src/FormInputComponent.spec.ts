@@ -2,6 +2,7 @@ import { FormInputComponent } from "./FormInputComponent";
 import { IFormatter } from "./Interfaces/IFormatter";
 import * as ko from "knockout";
 import { IParser } from "./Interfaces/IParser";
+import { right, left } from "./functionalHelpers/Either";
 
 describe("FormInputComponent", () => {
     it("should be able to pass initial value", () => {
@@ -28,7 +29,7 @@ describe("FormInputComponent", () => {
     });
     it("should format initial value using formatters", () => {
         const initialValue: number = 5;
-        const formatter: IFormatter<number, string> = (v) => v.toString();
+        const formatter: IFormatter<number, string> = (v) => v === void 0 ? "" : v.toString();
         const component: FormInputComponent<number, string> = new FormInputComponent({ initialValue: initialValue, formatters: [formatter] });
         expect(component.viewValue()).toEqual(initialValue.toString());
     });
@@ -43,9 +44,30 @@ describe("FormInputComponent", () => {
     });
     it("should parse view value to update model value", () => {
         const initialValue: number = 5;
-        const parser: IParser<string, number> = (v) => parseInt(v.toString(), 10);
+        const parser: IParser<string, number> = (v) => right(parseInt(v.toString(), 10));
         const component: FormInputComponent<number, string> = new FormInputComponent({ initialValue: initialValue, parsers: [parser] });
         component.viewValue("10");
         expect(component.modelValue()).toEqual(10);
+    });
+    it("if a parser cannot parse a value the model value should stay untouched", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => left("Error");
+        const component: FormInputComponent<number, string> = new FormInputComponent({ initialValue: initialValue, parsers: [parser] });
+        component.viewValue("10");
+        expect(component.modelValue()).toEqual(initialValue);
+    });
+    it("if a parser cannot parse a value the model value should be set to undefined if allowInvalid flag is true", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => left("Error");
+        const component: FormInputComponent<number, string> = new FormInputComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        component.viewValue("10");
+        expect(component.modelValue()).toBeUndefined();
+    });
+    it("if a parser cannot parse a value errors object should have property parse with message the error that was returned by the parser", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => left("Error");
+        const component: FormInputComponent<number, string> = new FormInputComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        component.viewValue("10");
+        expect(component.errors()).toEqual({parse: "Error"});
     });
 });

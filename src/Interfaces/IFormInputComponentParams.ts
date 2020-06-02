@@ -6,4 +6,5 @@ export interface IFormInputComponentParams<T, U> {
     initialValue: ko.MaybeObservable<T>; 
     formatters?: IFormatter<T, U>[]; 
     parsers?: IParser<U, T>[];
+    allowInvalid?: boolean;
 }

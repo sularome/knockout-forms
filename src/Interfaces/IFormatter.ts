@@ -1,1 +1,1 @@
-export type IFormatter<T, U> = (value: T | U) => U;
+export type IFormatter<T, U> = (value: T | U | undefined) => U;
