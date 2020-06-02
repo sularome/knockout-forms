@@ -1,0 +1,1 @@
+export type IParser<T, U> = (value: T | U) => U;

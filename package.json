@@ -6,6 +6,7 @@
   "scripts": {
     "ci": "npm run test",
     "clear": "npx rimraf dist",
+    "dev": "jest --config=jest.config.js --watch",
     "build": "npm run clear && npx tsc -p tsconfig.base.json",
     "test": "tsc --project tsconfig.test.json && jest --config=jest.config.js"
   },
