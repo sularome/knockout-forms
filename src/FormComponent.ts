@@ -3,14 +3,17 @@ import * as ko from "knockout";
 import { IParser } from "./Interfaces/IParser";
 import { IFormComponentParams } from "./Interfaces/IFormComponentParams";
 import { right, isLeft, Either, chain } from "./functionalHelpers/Either";
+import { objectHasProperties } from "./Utils";
 
 export class FormComponent<T = any, U = string> {
-    public modelValue: ko.Observable<T | undefined>;
-    public viewValue: ko.Observable<U>;
-    public formatters: IFormatter<T, U>[] = []; 
-    public parsers: IParser<U, T>[] = []; 
-    public errors: ko.Observable<Object> = ko.observable({}); 
+    public errors: ko.Observable<Object> = ko.observable({});
     public pristine: ko.Observable<boolean> = ko.observable(true);
+    public viewValue: ko.Observable<U>;
+    public formatters: IFormatter<T, U>[] = [];
+    public modelValue: ko.Observable<T | undefined>;
+    public parsers: IParser<U, T>[] = [];
+    public valid: ko.Computed<boolean> = ko.computed(() => !objectHasProperties(this.errors()), this);
+    public invalid: ko.Computed<boolean> = ko.computed(() => !this.valid(), this);
     public dirty: ko.Computed<boolean> = ko.computed(() => !this.pristine())
     private subscriptions: ko.Subscription[] = [];
     private allowInvalid: boolean = false;
@@ -39,6 +42,11 @@ export class FormComponent<T = any, U = string> {
                 this.modelValue(void 0);
             }
         } else {
+            const errorsCopy: Object = Object.assign({}, this.errors());
+            if (errorsCopy.hasOwnProperty("parse")){
+                delete (errorsCopy as any).parse;
+                this.errors(errorsCopy);
+            }
             if(newValue.right !== this.modelValue()) {
                 this.modelValue(newValue.right);
                 this.pristine(false);

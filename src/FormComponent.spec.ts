@@ -110,4 +110,20 @@ describe("FormComponent", () => {
         component.viewValue("10");
         expect(component.dirty()).toEqual(true);
     });
+    it("should be valid if no errors", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => right(0);
+        const component: FormComponent<number, string> = new FormComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        component.viewValue("10");
+        expect(component.valid()).toEqual(true);
+        expect(component.invalid()).toEqual(false);
+    });
+    it("should be invalid if there are errors", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => left("Error");
+        const component: FormComponent<number, string> = new FormComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        component.viewValue("10");
+        expect(component.valid()).toEqual(false);
+        expect(component.invalid()).toEqual(true);
+    });
 });
