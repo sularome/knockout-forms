@@ -70,4 +70,44 @@ describe("FormComponent", () => {
         component.viewValue("10");
         expect(component.errors()).toEqual({parse: "Error"});
     });
+    it("should set control to pristine if user hasn't interacted with the control", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => left("Error");
+        const component: FormComponent<number, string> = new FormComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        expect(component.pristine()).toEqual(true);
+    });
+    it("change in viewValue should set control to not pristine", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => right(0);
+        const component: FormComponent<number, string> = new FormComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        component.viewValue("10");
+        expect(component.pristine()).toEqual(false);
+    });
+    it("change in viewValue should set control to not pristine even if there is an error", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => left("Error");
+        const component: FormComponent<number, string> = new FormComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        component.viewValue("10");
+        expect(component.pristine()).toEqual(false);
+    });
+    it("should set control to not dirty if user hasn't interacted with the control", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => left("Error");
+        const component: FormComponent<number, string> = new FormComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        expect(component.dirty()).toEqual(false);
+    });
+    it("change in viewValue should set control to dirty", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => right(0);
+        const component: FormComponent<number, string> = new FormComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        component.viewValue("10");
+        expect(component.dirty()).toEqual(true);
+    });
+    it("change in viewValue should set control to dirty even if there is an error", () => {
+        const initialValue: number = 5;
+        const parser: IParser<string, number> = (v) => left("Error");
+        const component: FormComponent<number, string> = new FormComponent({ initialValue: initialValue, parsers: [parser], allowInvalid: true });
+        component.viewValue("10");
+        expect(component.dirty()).toEqual(true);
+    });
 });

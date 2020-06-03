@@ -10,6 +10,8 @@ export class FormComponent<T = any, U = string> {
     public formatters: IFormatter<T, U>[] = []; 
     public parsers: IParser<U, T>[] = []; 
     public errors: ko.Observable<Object> = ko.observable({}); 
+    public pristine: ko.Observable<boolean> = ko.observable(true);
+    public dirty: ko.Computed<boolean> = ko.computed(() => !this.pristine())
     private subscriptions: ko.Subscription[] = [];
     private allowInvalid: boolean = false;
 
@@ -31,6 +33,7 @@ export class FormComponent<T = any, U = string> {
     private onViewValueChange(viewValue: U): void {
         const newValue: Either<string, T | undefined> = this.transformViewValueToModelValue(viewValue);
         if (isLeft(newValue)) {
+            this.pristine(false);
             this.errors(Object.assign({}, this.errors(), {parse: newValue.left}));
             if (this.allowInvalid) {
                 this.modelValue(void 0);
@@ -38,6 +41,7 @@ export class FormComponent<T = any, U = string> {
         } else {
             if(newValue.right !== this.modelValue()) {
                 this.modelValue(newValue.right);
+                this.pristine(false);
             }
         }
     }
