@@ -1,5 +1,5 @@
-import { FormInputComponent } from "./FormInputComponent";
+import { FormComponent } from "./FormComponent";
 
 export {
-    FormInputComponent
+    FormComponent
 };

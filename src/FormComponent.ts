@@ -1,10 +1,10 @@
 import { IFormatter } from "./Interfaces/IFormatter";
 import * as ko from "knockout";
 import { IParser } from "./Interfaces/IParser";
-import { IFormInputComponentParams } from "./Interfaces/IFormInputComponentParams";
+import { IFormComponentParams } from "./Interfaces/IFormComponentParams";
 import { right, isLeft, Either, chain } from "./functionalHelpers/Either";
 
-export class FormInputComponent<T = any, U = string> {
+export class FormComponent<T = any, U = string> {
     public modelValue: ko.Observable<T | undefined>;
     public viewValue: ko.Observable<U>;
     public formatters: IFormatter<T, U>[] = []; 
@@ -13,7 +13,7 @@ export class FormInputComponent<T = any, U = string> {
     private subscriptions: ko.Subscription[] = [];
     private allowInvalid: boolean = false;
 
-    constructor(params: IFormInputComponentParams<T, U>) {
+    constructor(params: IFormComponentParams<T, U>) {
         this.modelValue = ko.isObservable(params.initialValue) ? params.initialValue : ko.observable(params.initialValue);
         this.formatters = params.formatters || [];
         this.parsers = params.parsers || [];
