@@ -28,11 +28,15 @@
   "homepage": "https://github.com/sularome/knockout-forms#readme",
   "devDependencies": {
     "@types/jest": "^25.2.3",
+    "@types/lodash": "^4.14.155",
     "jest": "^26.0.1",
     "knockout": "^3.5.1",
     "rimraf": "^3.0.2",
     "tslint": "^6.1.2",
     "tslint-config-airbnb": "^5.11.2",
     "typescript": "^3.9.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
   }
 }
