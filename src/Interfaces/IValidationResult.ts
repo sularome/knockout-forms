@@ -1,3 +1,3 @@
-export type IValidationResult = {
+export type IValidationResult = Readonly<{
   [key: string]: string;
-};
+}>;
