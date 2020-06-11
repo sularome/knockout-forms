@@ -1,36 +1,28 @@
-import { IFormatter } from './Interfaces/IFormatter';
 import * as ko from 'knockout';
-import { IParser } from './Interfaces/IParser';
+
+import { AbstractControl } from './AbstractControl';
+import { chain, Either, isLeft, right } from './functionalHelpers/Either';
+import { IFormatter } from './Interfaces/IFormatter';
 import { IFormControlParams } from './Interfaces/IFormControlParams';
-import { right, isLeft, Either, chain } from './functionalHelpers/Either';
-import { objectHasProperties } from './Utils';
-import { IValidate } from './Interfaces/IValidate';
+import { IParser } from './Interfaces/IParser';
 import { IValidationResult } from './Interfaces/IValidationResult';
-import { IAbstractControl } from './Interfaces/IAbstractControl';
 
 export const PARSE_ERROR_KEY: string = 'parse';
 
-export class FormControl<T = any, U = string> implements IAbstractControl<T> {
-  public errors: ko.Observable<IValidationResult> = ko.observable({});
-  public pristine: ko.Observable<boolean> = ko.observable(true);
+export class FormControl<T = any, U = string> extends AbstractControl<T> {
   public viewValue: ko.Observable<U>;
   public formatters: IFormatter<T, U>[] = [];
-  public value: ko.Observable<T | undefined>;
   public parsers: IParser<U, T>[] = [];
-  public validators: IValidate<T>[] = [];
-  public valid: ko.Computed<boolean> = ko.computed(() => !objectHasProperties(this.errors()), this);
-  public invalid: ko.Computed<boolean> = ko.computed(() => !this.valid(), this);
-  public dirty: ko.Computed<boolean> = ko.computed(() => !this.pristine());
   private subscriptions: ko.Subscription[] = [];
   private allowInvalid: boolean = false;
 
   constructor(params: IFormControlParams<T, U>) {
+    super(params.validators || []);
     this.value = ko.isObservable(params.initialValue)
                       ? params.initialValue
                       : ko.observable(params.initialValue);
     this.formatters = params.formatters || [];
     this.parsers = params.parsers || [];
-    this.validators = params.validators || [];
     this.allowInvalid = !!params.allowInvalid;
     this.viewValue = ko.observable(this.transformModelValueToViewValue(this.value()));
     this.subscriptions.push(this.viewValue.subscribe(this.onViewValueChange, this));
