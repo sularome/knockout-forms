@@ -6,11 +6,12 @@ import { right, isLeft, Either, chain } from './functionalHelpers/Either';
 import { objectHasProperties } from './Utils';
 import { IValidate } from './Interfaces/IValidate';
 import { IValidationResult } from './Interfaces/IValidationResult';
+import { IAbstractControl } from './Interfaces/IAbstractControl';
 
 export const PARSE_ERROR_KEY: string = 'parse';
 
-export class FormComponent<T = any, U = string> {
-  public errors: ko.Observable<Object> = ko.observable({});
+export class FormComponent<T = any, U = string> implements IAbstractControl {
+  public errors: ko.Observable<IValidationResult> = ko.observable({});
   public pristine: ko.Observable<boolean> = ko.observable(true);
   public viewValue: ko.Observable<U>;
   public formatters: IFormatter<T, U>[] = [];
