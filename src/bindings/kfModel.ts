@@ -1,4 +1,4 @@
-import { FormComponent } from '../FormComponent';
+import { FormControl } from '../FormControl';
 import * as ko from 'knockout';
 
 ko.bindingHandlers.kfModel = <ko.BindingHandler<ko.Observable<any>>>{
@@ -9,7 +9,7 @@ ko.bindingHandlers.kfModel = <ko.BindingHandler<ko.Observable<any>>>{
     viewModel,
     bindingContext) => {
     let controlsDescendantBindings: boolean = false;
-    const control: FormComponent = new FormComponent<any, any>({ initialValue: valueAccessor() });
+    const control: FormControl = new FormControl<any, any>({ initialValue: valueAccessor() });
     const name: string | null = element.getAttribute('name');
     if (name) {
       const innerBindingContext = bindingContext.extend({ [name]: control });

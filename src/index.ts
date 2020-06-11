@@ -1,5 +1,5 @@
-import { FormComponent } from "./FormComponent";
+import { FormControl } from './FormControl';
 
 export {
-    FormComponent
+  FormControl,
 };

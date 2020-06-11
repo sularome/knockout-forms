@@ -1,7 +1,7 @@
 import { IFormatter } from './Interfaces/IFormatter';
 import * as ko from 'knockout';
 import { IParser } from './Interfaces/IParser';
-import { IFormComponentParams } from './Interfaces/IFormComponentParams';
+import { IFormControlParams } from './Interfaces/IFormControlParams';
 import { right, isLeft, Either, chain } from './functionalHelpers/Either';
 import { objectHasProperties } from './Utils';
 import { IValidate } from './Interfaces/IValidate';
@@ -10,7 +10,7 @@ import { IAbstractControl } from './Interfaces/IAbstractControl';
 
 export const PARSE_ERROR_KEY: string = 'parse';
 
-export class FormComponent<T = any, U = string> implements IAbstractControl<T> {
+export class FormControl<T = any, U = string> implements IAbstractControl<T> {
   public errors: ko.Observable<IValidationResult> = ko.observable({});
   public pristine: ko.Observable<boolean> = ko.observable(true);
   public viewValue: ko.Observable<U>;
@@ -24,7 +24,7 @@ export class FormComponent<T = any, U = string> implements IAbstractControl<T> {
   private subscriptions: ko.Subscription[] = [];
   private allowInvalid: boolean = false;
 
-  constructor(params: IFormComponentParams<T, U>) {
+  constructor(params: IFormControlParams<T, U>) {
     this.value = ko.isObservable(params.initialValue)
                       ? params.initialValue
                       : ko.observable(params.initialValue);

@@ -3,7 +3,7 @@ import { IFormatter } from './IFormatter';
 import * as ko from 'knockout';
 import { IValidate } from './IValidate';
 
-export interface IFormComponentParams<T, U> {
+export interface IFormControlParams<T, U> {
   initialValue: ko.MaybeObservable<T>;
   formatters?: IFormatter<T, U>[];
   parsers?: IParser<U, T>[];
