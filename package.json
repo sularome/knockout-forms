@@ -6,7 +6,7 @@
   "scripts": {
     "ci": "npm run test",
     "clear": "npx rimraf dist",
-    "dev": "jest --config=jest.config.js --watch",
+    "dev": "concurrently --kill-others \"jest --config=jest.config.js --watchAll\" \"tsc -p tsconfig.test.json -w\"",
     "build": "npm run clear && npx tsc -p tsconfig.base.json",
     "test": "tsc --project tsconfig.test.json && jest --config=jest.config.js"
   },
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "@types/lodash": "^4.14.155",
+    "concurrently": "^5.2.0",
     "jest": "^26.0.1",
     "knockout": "^3.5.1",
     "rimraf": "^3.0.2",
