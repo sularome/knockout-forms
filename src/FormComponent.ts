@@ -10,14 +10,14 @@ import { IAbstractControl } from './Interfaces/IAbstractControl';
 
 export const PARSE_ERROR_KEY: string = 'parse';
 
-export class FormComponent<T = any, U = string> implements IAbstractControl {
+export class FormComponent<T = any, U = string> implements IAbstractControl<T> {
   public errors: ko.Observable<IValidationResult> = ko.observable({});
   public pristine: ko.Observable<boolean> = ko.observable(true);
   public viewValue: ko.Observable<U>;
   public formatters: IFormatter<T, U>[] = [];
-  public modelValue: ko.Observable<T | undefined>;
+  public value: ko.Observable<T | undefined>;
   public parsers: IParser<U, T>[] = [];
-  public validators: IValidate<T, U>[] = [];
+  public validators: IValidate<T>[] = [];
   public valid: ko.Computed<boolean> = ko.computed(() => !objectHasProperties(this.errors()), this);
   public invalid: ko.Computed<boolean> = ko.computed(() => !this.valid(), this);
   public dirty: ko.Computed<boolean> = ko.computed(() => !this.pristine());
@@ -25,21 +25,21 @@ export class FormComponent<T = any, U = string> implements IAbstractControl {
   private allowInvalid: boolean = false;
 
   constructor(params: IFormComponentParams<T, U>) {
-    this.modelValue = ko.isObservable(params.initialValue)
+    this.value = ko.isObservable(params.initialValue)
                       ? params.initialValue
                       : ko.observable(params.initialValue);
     this.formatters = params.formatters || [];
     this.parsers = params.parsers || [];
     this.validators = params.validators || [];
     this.allowInvalid = !!params.allowInvalid;
-    this.viewValue = ko.observable(this.transformModelValueToViewValue(this.modelValue()));
+    this.viewValue = ko.observable(this.transformModelValueToViewValue(this.value()));
     this.subscriptions.push(this.viewValue.subscribe(this.onViewValueChange, this));
-    this.subscriptions.push(this.modelValue.subscribe(this.onModelValueChange, this));
+    this.subscriptions.push(this.value.subscribe(this.onModelValueChange, this));
     this.runValidation();
   }
 
   public dispose(): void {
-    delete this.modelValue;
+    delete this.value;
     this.subscriptions.forEach(s => s.dispose());
   }
 
@@ -49,12 +49,12 @@ export class FormComponent<T = any, U = string> implements IAbstractControl {
       this.pristine(false);
       this.errors({ [PARSE_ERROR_KEY]: newValue.left });
       if (this.allowInvalid) {
-        this.modelValue(void 0);
+        this.value(void 0);
       }
     } else {
       this.errors({});
-      if (newValue.right !== this.modelValue()) {
-        this.modelValue(newValue.right);
+      if (newValue.right !== this.value()) {
+        this.value(newValue.right);
         this.pristine(false);
       }
       this.runValidation();
@@ -71,7 +71,7 @@ export class FormComponent<T = any, U = string> implements IAbstractControl {
   private runValidation(): void {
     if (!this.hasParseErrors()) {
       const errors: IValidationResult = {};
-      this.validators.reduce((pv, validator) => Object.assign(pv, validator(this.modelValue(), this.viewValue())), errors);
+      this.validators.reduce((pv, validator) => Object.assign(pv, validator(this)), errors);
       this.errors(errors);
     }
   }

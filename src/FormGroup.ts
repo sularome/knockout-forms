@@ -2,15 +2,17 @@ import { IAbstractControl } from './Interfaces/IAbstractControl';
 import * as ko from 'knockout';
 import { objectHasProperties } from './Utils';
 import { IValidationResult } from './Interfaces/IValidationResult';
-export class FormGroup<T> implements IAbstractControl {
-  public valid: ko.Computed<boolean> = ko.pureComputed(() => !objectHasProperties(this.errors()));
+import { IValidate } from './Interfaces/IValidate';
+export class FormGroup<T> implements IAbstractControl<T> {
+  public components: ko.Observable<Map<string, IAbstractControl<T>>> = ko.observable(new Map());
+  public errors: ko.Observable<IValidationResult> = ko.observable({});
+  public value: ko.Observable<T | undefined> = ko.observable();
+  public validators: IValidate<T>[] = [];
   public invalid: ko.Computed<boolean> = ko.pureComputed(() => !this.valid());
-  public errors: ko.Computed<IValidationResult> = ko.pureComputed(() => this.internalErrors());
-  private internalErrors: ko.Observable<IValidationResult> = ko.observable({});
-  public components: ko.Observable<Map<string, IAbstractControl>> = ko.observable(new Map());
+  public valid: ko.Computed<boolean> = ko.pureComputed(() => !objectHasProperties(this.errors()));
 
-  public addControl(name: string, control: IAbstractControl): void {
-    const oldMap: Map<string, IAbstractControl> = this.components();
+  public addControl(name: string, control: IAbstractControl<T>): void {
+    const oldMap: Map<string, IAbstractControl<T>> = this.components();
     oldMap.set(name, control);
     this.components(new Map(oldMap));
   }

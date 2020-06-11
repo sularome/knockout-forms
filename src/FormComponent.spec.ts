@@ -11,12 +11,12 @@ describe('FormComponent', () => {
   it('should be able to pass initial value', () => {
     const initialValue: number = 5;
     const component: FormComponent<number, number> = new FormComponent({ initialValue });
-    expect(component.modelValue()).toEqual(initialValue);
+    expect(component.value()).toEqual(initialValue);
   });
   it('should be able to pass observable as initial value', () => {
     const initialValue: ko.Observable<number> = ko.observable(5);
     const component: FormComponent<number, number> = new FormComponent({ initialValue });
-    expect(component.modelValue).toEqual(initialValue);
+    expect(component.value).toEqual(initialValue);
   });
   it('should set view value to initial value if no formatters', () => {
     const initialValue: number = 5;
@@ -28,7 +28,7 @@ describe('FormComponent', () => {
     const expectedValue: number = 10;
     const component: FormComponent<number, number> = new FormComponent({ initialValue });
     component.viewValue(expectedValue);
-    expect(component.modelValue()).toEqual(expectedValue);
+    expect(component.value()).toEqual(expectedValue);
   });
   it('should format initial value using formatters', () => {
     const initialValue: number = 5;
@@ -51,21 +51,21 @@ describe('FormComponent', () => {
     const parser: IParser<string, number> = v => right(parseInt(v.toString(), 10));
     const component: FormComponent<number, string> = new FormComponent({ initialValue, parsers: [parser] });
     component.viewValue('10');
-    expect(component.modelValue()).toEqual(10);
+    expect(component.value()).toEqual(10);
   });
   it('if a parser cannot parse a value the model value should stay untouched', () => {
     const initialValue: number = 5;
     const parser: IParser<string, number> = v => left('Error');
     const component: FormComponent<number, string> = new FormComponent({ initialValue, parsers: [parser] });
     component.viewValue('10');
-    expect(component.modelValue()).toEqual(initialValue);
+    expect(component.value()).toEqual(initialValue);
   });
   it('if a parser cannot parse a value the model value should be set to undefined if allowInvalid flag is true', () => {
     const initialValue: number = 5;
     const parser: IParser<string, number> = v => left('Error');
     const component: FormComponent<number, string> = new FormComponent({ initialValue, parsers: [parser], allowInvalid: true });
     component.viewValue('10');
-    expect(component.modelValue()).toBeUndefined();
+    expect(component.value()).toBeUndefined();
   });
   // tslint:disable-next-line: max-line-length
   it('if a parser cannot parse a value errors object should have property parse with message the error that was returned by the parser', () => {
@@ -133,7 +133,7 @@ describe('FormComponent', () => {
   });
   it('should be able to pass validator which should update error object if the value is not valid', () => {
     const initialValue: number = 5;
-    const validator: IValidate<number, string> = () => ({ testError: 'Error' });
+    const validator: IValidate<number> = () => ({ testError: 'Error' });
     const component: FormComponent<number, string> = new FormComponent({ initialValue, validators: [validator] });
     expect(component.valid()).toEqual(false);
     expect(component.invalid()).toEqual(true);
@@ -151,7 +151,7 @@ describe('FormComponent', () => {
   it('should mark value as valid if first invalid and after set to valid', () => {
     const initialValue: number = 5;
     const error: IValidationResult = { testError: 'Error' };
-    const validator: IValidate<number, number> = model => model === initialValue ? error : {};
+    const validator: IValidate<number> = c => c.value() === initialValue ? error : {};
     const component: FormComponent<number, number> = new FormComponent({ initialValue, validators: [validator] });
     expect(component.errors()).toEqual({ testError: 'Error' });
     component.viewValue(10);
