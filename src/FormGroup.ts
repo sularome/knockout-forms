@@ -4,17 +4,22 @@ import { AbstractControl } from './AbstractControl';
 import { IAbstractControl } from './Interfaces/IAbstractControl';
 import { IValidate } from './Interfaces/IValidate';
 import { IValidationResult } from './Interfaces/IValidationResult';
+import { objectHasProperties } from './Utils';
 
 export class FormGroup<T> extends AbstractControl<T> {
-  public components: ko.Observable<Map<string, IAbstractControl<T>>> = ko.observable(new Map());
+  public components: ko.Observable<Map<string, IAbstractControl<any>>> = ko.observable(new Map());
   public value: ko.Observable<T | undefined> = ko.observable();
 
   constructor(validators?: IValidate<T>[]) {
     super(validators || []);
   }
 
-  public addControl(name: string, control: IAbstractControl<T>): void {
-    const oldMap: Map<string, IAbstractControl<T>> = this.components();
+  protected calculateIsValid(): boolean {
+    return !objectHasProperties(this.errors()) && Array.from(this.components().values()).every(c => c.valid());
+  }
+
+  public addControl<U>(name: string, control: IAbstractControl<U>): void {
+    const oldMap: Map<string, IAbstractControl<U>> = this.components();
     oldMap.set(name, control);
     this.components(new Map(oldMap));
     this.runValidation();

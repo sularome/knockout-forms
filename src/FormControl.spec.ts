@@ -6,6 +6,7 @@ import { right, left } from './functionalHelpers/Either';
 import { IFormControlParams } from './Interfaces/IFormControlParams';
 import { IValidate } from './Interfaces/IValidate';
 import { IValidationResult } from './Interfaces/IValidationResult';
+import { FormGroup } from './FormGroup';
 
 describe('FormControl', () => {
   it('should be able to pass initial value', () => {
@@ -156,5 +157,22 @@ describe('FormControl', () => {
     expect(component.errors()).toEqual({ testError: 'Error' });
     component.viewValue(10);
     expect(component.errors()).toEqual({ });
+  });
+  it('should be able to set errors manually', () => {
+    const component: FormControl<number, number> = new FormControl({ initialValue: 0 });
+    component.setErrors({ someError: 'Some error' });
+    expect(component.errors()).toEqual({ someError: 'Some error' });
+  });
+  it('should allow the user to set errors manually and the control should be invalid', () => {
+    const component: FormControl<number, number> = new FormControl({ initialValue: 0 });
+    component.setErrors({ someError: 'Some error' });
+    expect(component.invalid()).toEqual(true);
+  });
+  it('should allow the user to set errors manually and the parent should also be marked as invalid', () => {
+    const component: FormControl<number, number> = new FormControl({ initialValue: 0 });
+    const parent: FormGroup<{ component: number }> = new FormGroup();
+    parent.addControl('component', component);
+    component.setErrors({ someError: 'Some error' });
+    expect(parent.invalid()).toEqual(true);
   });
 });

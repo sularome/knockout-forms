@@ -6,6 +6,7 @@ import { IFormatter } from './Interfaces/IFormatter';
 import { IFormControlParams } from './Interfaces/IFormControlParams';
 import { IParser } from './Interfaces/IParser';
 import { IValidationResult } from './Interfaces/IValidationResult';
+import { objectHasProperties } from './Utils';
 
 export const PARSE_ERROR_KEY: string = 'parse';
 
@@ -13,6 +14,7 @@ export class FormControl<T = any, U = string> extends AbstractControl<T> {
   public viewValue: ko.Observable<U>;
   public formatters: IFormatter<T, U>[] = [];
   public parsers: IParser<U, T>[] = [];
+  public value: ko.Observable<T | undefined>;
   private subscriptions: ko.Subscription[] = [];
   private allowInvalid: boolean = false;
 
@@ -28,6 +30,10 @@ export class FormControl<T = any, U = string> extends AbstractControl<T> {
     this.subscriptions.push(this.viewValue.subscribe(this.onViewValueChange, this));
     this.subscriptions.push(this.value.subscribe(this.onModelValueChange, this));
     this.runValidation();
+  }
+
+  protected calculateIsValid(): boolean {
+    return !objectHasProperties(this.errors());
   }
 
   public dispose(): void {
