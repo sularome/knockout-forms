@@ -10,8 +10,8 @@ describe('kfModel', () => {
   }
 
   it('should create FormControl and extend context with property the name of the component', () => {
-    const initialHTML: string = '<div data-bind="kfModel: value" name="test"><span data-bind="text: test.viewValue"></span></div>';
-    const resultHTML: string = '<div data-bind="kfModel: value" name="test"><span data-bind="text: test.viewValue">test</span></div>';
+    const initialHTML: string = '<div data-bind="kfModel: value" name="test"><span data-bind="text: test.value"></span></div>';
+    const resultHTML: string = '<div data-bind="kfModel: value" name="test"><span data-bind="text: test.value">test</span></div>';
     const el: HTMLElement = bindToHTML(
       initialHTML,
       { value: ko.observable('test') },
@@ -20,8 +20,8 @@ describe('kfModel', () => {
   });
 
   it('should update view when modelValue changes', () => {
-    const initialHTML: string = '<div data-bind="kfModel: value" name="test"><span data-bind="text: test.viewValue"></span></div>';
-    const resultHTML: string = '<div data-bind="kfModel: value" name="test"><span data-bind="text: test.viewValue">test</span></div>';
+    const initialHTML: string = '<div data-bind="kfModel: value" name="test"><span data-bind="text: test.value"></span></div>';
+    const resultHTML: string = '<div data-bind="kfModel: value" name="test"><span data-bind="text: test.value">test</span></div>';
     const modelValue: ko.Observable<string> = ko.observable('initial');
     const el: HTMLElement = bindToHTML(
       initialHTML,
