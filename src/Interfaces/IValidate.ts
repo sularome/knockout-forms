@@ -1,4 +1,4 @@
 import { IValidationResult } from './IValidationResult';
-import { IAbstractControl } from './IAbstractControl';
+import { AbstractControl } from '../AbstractControl';
 
-export type IValidate<T> = (control: IAbstractControl<T>)  => IValidationResult;
+export type IValidate<T> = (control: AbstractControl<T>)  => IValidationResult;
