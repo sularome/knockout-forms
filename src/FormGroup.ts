@@ -13,6 +13,10 @@ export class FormGroup<T> extends AbstractControl<T> {
     super(validators || []);
   }
 
+  public dispose(): void {
+    this.components().forEach(c => c.dispose());
+  }
+
   protected calculateIsValid(): boolean {
     return !objectHasProperties(this.errors()) && Array.from(this.components().values()).every(c => c.valid());
   }

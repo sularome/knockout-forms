@@ -17,6 +17,7 @@ export abstract class AbstractControl<T> {
   }
 
   protected abstract calculateIsValid(): boolean;
+  public abstract dispose(): void;
 
   public setParent(control: FormControlParent<any>): void {
     this.parent = control;
